@@ -9,16 +9,20 @@ exports.name = JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).
 var listVersions = function() {
   // find all of the versions of node installed by n.
   var file = path.join(process.env.N_PREFIX || '/usr/local', 'n/versions');
-  return fs.readdirSync(file).filter(function(name) {
-    return name[0] !== '.';
-  });
+  var result = [];
+  if (fs.existsSync(file)) {
+    result = fs.readdirSync(file).filter(function(name) {
+      return name[0] !== '.';
+    });
+  }
+  return result;
 };
 
 var installedVersion = function(matching) {
   var version = null;
   listVersions().forEach(function(v) {
     if (semver.satisfies(v, matching)) {
-      if (!version || semver.gt(version, v)) {
+      if (!version || semver.gt(v, version)) {
         version = v;
       }
     }

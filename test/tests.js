@@ -14,17 +14,7 @@ describe('plugin', function() {
   afterEach(function() { process.env.N_PREFIX = prefix_; });
 
   it('matches exact version', function(done) {
-    plugin.match('0.10.26').then(function(result) {
-      expect(result).to.eql({
-        version: '0.10.26',
-        command: 'n 0.10.26 > /dev/null;'
-      });
-    })
-    .done(done);
-  });
-
-  it('matches with semver syntax', function(done) {
-    plugin.match('~0.11.1').then(function(result) {
+    plugin.match('0.11.13').then(function(result) {
       expect(result).to.eql({
         version: '0.11.13',
         command: 'n 0.11.13 > /dev/null;'
@@ -33,11 +23,21 @@ describe('plugin', function() {
     .done(done);
   });
 
-  it('chooses greatest match', function(done) {
-    plugin.match('0.10').then(function(result) {
+  it('matches with semver syntax', function(done) {
+    plugin.match('>=0.10 < 0.10.29').then(function(result) {
       expect(result).to.eql({
         version: '0.10.28',
         command: 'n 0.10.28 > /dev/null;'
+      });
+    })
+    .done(done);
+  });
+
+  it('chooses greatest match', function(done) {
+    plugin.match('0.10').then(function(result) {
+      expect(result).to.eql({
+        version: '0.10.101',
+        command: 'n 0.10.101 > /dev/null;'
       });
     })
     .done(done);
@@ -52,6 +52,14 @@ describe('plugin', function() {
 
   it('has fallback prefix', function(done) {
     delete process.env.N_PREFIX;
+    plugin.match('0.0').then(
+      function() { throw new Error('Plugin should have rejected invalid version.'); },
+      function(e) { expect(e).to.eql('no version matching 0.0'); })
+    .done(done);
+  });
+
+  it('works when prefix is missing', function(done) {
+    process.env.N_PREFIX = '/path/that/we/know/will/never/exist';
     plugin.match('0.0').then(
       function() { throw new Error('Plugin should have rejected invalid version.'); },
       function(e) { expect(e).to.eql('no version matching 0.0'); })
