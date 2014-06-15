@@ -1,6 +1,6 @@
 # avn-n
 
-[![NPM version][npm-image]][npm-url] [![Build status][travis-image]][travis-url] [![Code Climate][codeclimate-image]][codeclimate-url] [![Coverage Status][coverage-image]][coverage-url] [![Dependencies][david-image]][david-url]
+[![NPM version][npm-image]][npm-url] [![Build status][travis-image]][travis-url] [![Code Climate][codeclimate-image]][codeclimate-url] [![Coverage Status][coverage-image]][coverage-url] [![Dependencies][david-image]][david-url] [![devDependencies][david-dev-image]][david-dev-url]
 
 [`n`][n] plugin for [`avn`][avn].
 
@@ -19,6 +19,8 @@ This project is distributed under the MIT license.
 [coverage-url]: https://coveralls.io/r/wbyoung/avn-n
 [david-image]: https://david-dm.org/wbyoung/avn-n.png?theme=shields.io
 [david-url]: https://david-dm.org/wbyoung/avn-n
+[david-dev-image]: https://david-dm.org/wbyoung/avn-n/dev-status.png?theme=shields.io
+[david-dev-url]: https://david-dm.org/wbyoung/avn-n#info=devDependencies
 
 [n]: https://github.com/visionmedia/n
 [avn]: https://github.com/wbyoung/avn
