@@ -4,7 +4,7 @@ var util = require('util');
 var semver = require('semver');
 var BPromise = require('bluebird');
 
-exports.name = JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).name;
+var name = JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).name;
 
 var listVersions = function() {
   // find all of the versions of node installed by n.
@@ -30,7 +30,7 @@ var installedVersion = function(matching) {
   return version;
 };
 
-exports.match = function(version) {
+var match = function(version) {
   return BPromise.resolve()
   .then(function() { return installedVersion(version); })
   .then(function(use) {
@@ -38,4 +38,9 @@ exports.match = function(version) {
     var result = { version: use, command: command };
     return use ? result : BPromise.reject('no version matching ' + version);
   });
+};
+
+module.exports = {
+  name: name,
+  match: match
 };
