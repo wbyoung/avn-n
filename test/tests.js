@@ -9,7 +9,7 @@ var expect = chai.expect;
 
 describe('plugin', function() {
   var prefix_ = process.env.N_PREFIX;
-  var prefix = path.resolve(path.join(__dirname, 'fixtures/n-prefix'));
+  var prefix = path.resolve(path.join(__dirname, 'fixtures/n-1.2-prefix'));
   beforeEach(function() { process.env.N_PREFIX = prefix; });
   afterEach(function() { process.env.N_PREFIX = prefix_; });
 
@@ -64,5 +64,21 @@ describe('plugin', function() {
       function() { throw new Error('Plugin should have rejected invalid version.'); },
       function(e) { expect(e).to.eql('no version matching 0.0'); })
     .done(done);
+  });
+
+  it('works with 1.3.x layout (iojs support)', function(done) {
+    process.env.N_PREFIX = path.resolve(path.join(__dirname, 'fixtures/n-1.3-prefix'));
+    plugin.match('0.11.13').then(function(result) {
+      expect(result).to.eql({
+        version: '0.11.13',
+        command: 'n 0.11.13 > /dev/null;'
+      });
+    })
+    .done(done);
+  });
+
+  it('finds iojs versions', function() {
+    expect(plugin._findVersion(['iojs-v1.1.0', 'v0.12.0'], 'iojs-v1.1'))
+      .to.eql('iojs-v1.1.0');
   });
 });
