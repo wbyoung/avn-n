@@ -77,8 +77,12 @@ var match = function(version) {
   return BPromise.resolve()
   .then(function() { return installedVersion(version); })
   .then(function(use) {
-    var command = util.format('n %s > /dev/null;', use);
-    var result = { version: use, command: command };
+    var vName = use && versionName(use);
+    var vNumber = use && versionNumber(use);
+    var subcommand = (vName === 'iojs') ? 'io ' : '';
+
+    var command = util.format('n %s%s > /dev/null;', subcommand, vNumber);
+    var result = { version: vNumber, command: command };
     return use ? result : BPromise.reject('no version matching ' + version);
   });
 };

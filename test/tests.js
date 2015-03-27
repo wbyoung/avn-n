@@ -77,6 +77,17 @@ describe('plugin', function() {
     .done(done);
   });
 
+  it('works with iojs commands', function(done) {
+    process.env.N_PREFIX = path.resolve(path.join(__dirname, 'fixtures/n-1.3-prefix'));
+    plugin.match('iojs-1.4').then(function(result) {
+      expect(result).to.eql({
+        version: '1.4.3',
+        command: 'n io 1.4.3 > /dev/null;'
+      });
+    })
+    .done(done);
+  });
+
   it('finds iojs versions', function() {
     expect(plugin._findVersion(['iojs-v1.1.0', 'v0.12.0'], 'iojs-v1.1'))
       .to.eql('iojs-v1.1.0');
