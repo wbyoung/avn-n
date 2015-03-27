@@ -29,13 +29,12 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.9.15",
-    "semver": "^2.3.0"
+    "semver": "^4.3.3"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
-    "chai": "^1.10.0",
-    "should": "^4.3.0",
-    "istanbul": "^0.2.10",
+    "chai": "^2.2.0",
+    "istanbul": "^0.3.11",
     "coveralls": "^2.10.0"
   },
   "peerDependencies": {
