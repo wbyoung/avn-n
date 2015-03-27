@@ -1,8 +1,8 @@
-var q = require('q');
 var fs = require('fs');
 var path = require('path');
 var util = require('util');
 var semver = require('semver');
+var BPromise = require('bluebird');
 
 exports.name = JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).name;
 
@@ -31,11 +31,11 @@ var installedVersion = function(matching) {
 };
 
 exports.match = function(version) {
-  return q()
+  return BPromise.resolve()
   .then(function() { return installedVersion(version); })
   .then(function(use) {
     var command = util.format('n %s > /dev/null;', use);
     var result = { version: use, command: command };
-    return use ? result : q.reject('no version matching ' + version);
+    return use ? result : BPromise.reject('no version matching ' + version);
   });
 };

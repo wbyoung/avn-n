@@ -28,7 +28,7 @@
   "author": "Whitney Young",
   "license": "MIT",
   "dependencies": {
-    "q": "^2.0.2",
+    "bluebird": "^2.9.15",
     "semver": "^2.3.0"
   },
   "devDependencies": {
