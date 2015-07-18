@@ -1,5 +1,4 @@
-/* jshint expr: true */
-/* global beforeEach, afterEach */
+'use strict';
 
 var plugin = require('..');
 var path = require('path');
@@ -46,7 +45,7 @@ describe('plugin', function() {
   it('rejects versions not installed', function(done) {
     plugin.match('0.9').then(
       function() { throw new Error('Plugin should have rejected invalid version.'); },
-      function(e) { expect(e).to.eql('no version matching 0.9'); })
+      function(e) { expect(e).to.match(/no version matching 0\.9/); })
     .done(done);
   });
 
@@ -54,7 +53,7 @@ describe('plugin', function() {
     delete process.env.N_PREFIX;
     plugin.match('0.0').then(
       function() { throw new Error('Plugin should have rejected invalid version.'); },
-      function(e) { expect(e).to.eql('no version matching 0.0'); })
+      function(e) { expect(e).to.match(/no version matching 0\.0/); })
     .done(done);
   });
 
@@ -62,7 +61,7 @@ describe('plugin', function() {
     process.env.N_PREFIX = '/path/that/we/know/will/never/exist';
     plugin.match('0.0').then(
       function() { throw new Error('Plugin should have rejected invalid version.'); },
-      function(e) { expect(e).to.eql('no version matching 0.0'); })
+      function(e) { expect(e).to.match(/no version matching 0\.0/); })
     .done(done);
   });
 

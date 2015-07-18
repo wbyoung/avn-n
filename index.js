@@ -1,13 +1,23 @@
+'use strict';
+
 var fs = require('fs');
 var path = require('path');
 var util = require('util');
 var semver = require('semver');
-var BPromise = require('bluebird');
-
-var name = JSON.parse(fs.readFileSync(__dirname + '/package.json', 'utf8')).name;
+var Promise = require('bluebird');
+var name = require('./package.json').name;
 
 var VERSION_REGEX = /(\w+)-(.+)/;
 
+/**
+ * List all versions.
+ *
+ * Note: this method is currently implemented using `*Sync` methods.
+ *
+ * @private
+ * @function
+ * @return {Array.<Version>}
+ */
 var listVersions = function() {
   // find all of the versions of node installed by n.
   var result = [];
@@ -18,33 +28,56 @@ var listVersions = function() {
   var iojsVersionsExists = fs.existsSync(iojsVersions);
   var simpleVersions = path.join(prefix, 'n/versions');
   var simpleVersionsExists = fs.existsSync(simpleVersions);
+  /** local */
   var notHiddenFile = function(name) { return name[0] !== '.'; };
   if (nodeVersionsExists) {
-    result = result.concat(fs.readdirSync(nodeVersions).filter(notHiddenFile));
+    result = result.concat(fs.readdirSync(nodeVersions)
+      .filter(notHiddenFile));
   }
   if (iojsVersionsExists) {
-    result = result.concat(fs.readdirSync(iojsVersions).filter(notHiddenFile).map(function(name) {
-      return 'iojs-' + name;
-    }));
+    result = result.concat(fs.readdirSync(iojsVersions)
+      .filter(notHiddenFile)
+      .map(function(name) { return 'iojs-' + name; }));
   }
   if (!nodeVersionsExists && !iojsVersionsExists && simpleVersionsExists) {
-    result = result.concat(fs.readdirSync(simpleVersions).filter(notHiddenFile));
+    result = result.concat(fs.readdirSync(simpleVersions)
+      .filter(notHiddenFile));
   }
   return result;
 };
 
-// extract a name from a version (to support iojs)
+/**
+ * Extract a name from a version (to support iojs)
+ *
+ * @private
+ * @function
+ * @return {Promise}
+ */
 var versionName = function(version) {
   var match = version.match(VERSION_REGEX);
   return match ? match[1] : null;
 };
 
-// extract just the version number from a version
+/**
+ * Extract just the version number from a version.
+ *
+ * @private
+ * @function
+ * @param {String} version
+ * @return {String}
+ */
 var versionNumber = function(version) {
   var match = version.match(VERSION_REGEX);
   return match ? match[2] : version;
 };
 
+/**
+ * Find a version.
+ *
+ * @param {Array.<String>} versions
+ * @param {String} matching
+ * @return {String}
+ */
 var findVersion = function(versions, matching) {
   var highestMatch = null;
 
@@ -65,16 +98,28 @@ var findVersion = function(versions, matching) {
   return highestMatch;
 };
 
+/**
+ * Get installed version matching a given version.
+ *
+ * @param {String} matching
+ * @return {Promise}
+ */
 var installedVersion = function(matching) {
-  return BPromise.resolve()
+  return Promise.resolve()
   .then(function() { return listVersions(); })
   .then(function(versions) {
     return findVersion(versions, matching);
   });
 };
 
+/**
+ * Match a specific version.
+ *
+ * @param {String} version
+ * @return {Promise}
+ */
 var match = function(version) {
-  return BPromise.resolve()
+  return Promise.resolve()
   .then(function() { return installedVersion(version); })
   .then(function(use) {
     var vName = use && versionName(use);
@@ -83,12 +128,13 @@ var match = function(version) {
 
     var command = util.format('n %s%s > /dev/null;', subcommand, vNumber);
     var result = { version: vNumber, command: command };
-    return use ? result : BPromise.reject('no version matching ' + version);
+    return use ? result :
+      Promise.reject(new Error('no version matching ' + version));
   });
 };
 
 module.exports = {
   name: name,
   match: match,
-  _findVersion: findVersion
+  _findVersion: findVersion,
 };
