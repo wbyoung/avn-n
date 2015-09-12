@@ -30,13 +30,13 @@
   "license": "MIT",
   "dependencies": {
     "bluebird": "^2.9.15",
-    "semver": "^4.3.3"
+    "semver": "^5.0.3"
   },
   "devDependencies": {
-    "chai": "^2.2.0",
+    "chai": "^3.2.0",
     "coveralls": "^2.10.0",
     "istanbul": "^0.3.11",
-    "jscs": "^1.13.1",
+    "jscs": "^2.1.1",
     "jscs-jsdoc": "^1.1.0",
     "jshint": "^2.8.0",
     "mocha": "^2.0.1"
